@@ -5,6 +5,7 @@ var withinComment  = false;
 var input_words    = "";
 var compiling_word = { name: "", data: ""};
 var words          = {
+    // arithmetic words
     "+":  function()  { pstack.push(pstack.pop() + pstack.pop()); },
     "-":  function()  { pstack.push(pstack.pop() - pstack.pop()); },
     "*":  function()  { pstack.push(pstack.pop() * pstack.pop()); },
@@ -12,20 +13,25 @@ var words          = {
     "=":  function()  { pstack.push(booleanify(pstack.pop() == pstack.pop())); },
     "MOD": function() { pstack.push(pstack.pop() % pstack.pop()); },
 
+    // stack manipulation words
     "DUP": function()  { var top = pstack.pop(); pstack.push(top); pstack.push(top); }, // can this be improved?
     "SWAP": function() { var a = pstack.pop(); var b = pstack.pop(); pstack.push(a); pstack.push(b); },
     "DROP": function() { pstack.pop(); },
 
+    // return-stack related words
     ">R": function() { rstack.push(pstack.pop()); },
     "R>": function() { pstack.push(rstack.pop()); },
 
+    // compiling-related words
     ":": function() { mode = 1; },
     ";": function() { compile(); },
     "(": function() { withinComment = true; },
     ")": function() { withinComment = false; },
 
+    // special words
     ".":  function()         { println(pstack.pop()); },
     ".S": function()         { println("<" + pstack.length + "> " + pstack.join(" ")); },
+    "PAGE": function()       { document.getElementById("foutput").value = "" },
     "WORDS": function()      { println(Object.keys(words).join(" ")); },
     "CLEARSTACK": function() { pstack = []; println(""); }
 };
