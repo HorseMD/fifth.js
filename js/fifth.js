@@ -25,15 +25,21 @@ var words          = {
     ")": function() { withinComment = false; },
 
     ".":  function()         { println(pstack.pop()); },
-    ".S": function()         { println("<" + pstack.length + "> " + pstack); },
+    ".S": function()         { println("<" + pstack.length + "> " + pstack.join(" ")); },
     "WORDS": function()      { println(Object.keys(words).join(" ")); },
     "CLEARSTACK": function() { pstack = []; println(""); }
 };
 
-// print the given text to whatever print() wants us to.
-// we let/expect print be overriden by index.html.
+// used directly by the input area for commands.
+// print the given text + ok to the output (#foutput).
+var printStd = function(text) {
+    document.getElementById("foutput").value += text + "\n";
+}
+
+// used by fifth.js to respond to the user.
+// print the given text to the output.
 var println = function(text) {
-    print(text + " ok")
+    printStd(text + " ok");
 }
 
 // add the word that's currently compiling to the dictionary

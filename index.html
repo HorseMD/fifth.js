@@ -3,18 +3,14 @@
     <head>
         <title>Fifth.js</title>
         <meta charset="utf-8">
-        <script>
-         window.onload = function() {
-             var print = function(text) {
-                 document.getElementById("foutput").value += text + "\n";
-             }
-             
+        <script>         
+         window.onload = function() {             
              document.getElementById("finput").onkeypress = function(e) {
                  if(!e) {
                      e = window.event;
                  }
-                 if((e.keyCode || e.which) == '13') {
-                     print(this.value);
+                 if((e.keyCode || e.which) == '13') { //when the user presses 'Enter'
+                     printStd(this.value);
                      parse(this.value);
                      this.value = "";
                  }
