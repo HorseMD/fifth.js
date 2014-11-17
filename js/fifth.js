@@ -14,9 +14,12 @@ var words          = {
     "MOD": function() { pstack.push(pstack.pop() % pstack.pop()); },
 
     // stack manipulation words
-    "DUP": function()  { var top = pstack.pop(); pstack.push(top); pstack.push(top); }, // can this be improved?
+    "DUP": function()  { var top = pstack.pop(); pstack.push(top); pstack.push(top); },
     "SWAP": function() { var a = pstack.pop(); var b = pstack.pop(); pstack.push(a); pstack.push(b); },
     "DROP": function() { pstack.pop(); },
+    "ROT": function()  { var a = pstack.pop(); var b = pstack.pop(); var c = pstack.pop(); pstack.push(b); pstack.push(a); pstack.push(c); },
+    "NIP": function()  { var a = pstack.pop(); pstack.pop(); pstack.push(a); },
+    "2DROP": "DROP DROP",
 
     // return-stack related words
     ">R": function() { rstack.push(pstack.pop()); },
@@ -98,7 +101,7 @@ var parseToken = function(element, index, arr) {
                 parse(word);
             }
         }  else if (!withinComment) {
-            throw "Word " + element + " isn't in the dictionary.";
+            println("Word " + element + " isn't in the dictionary.");
         }
     }
 };
