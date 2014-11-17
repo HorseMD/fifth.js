@@ -2,7 +2,7 @@ var pstack = new Array();
 var rstack = new Array();
 var mode = 0; // interptret = 0, compile = 1
 var withinComment  = false;
-var input_words    = ": square ( n -- n ) DUP * ; 5 square .S";
+var input_words    = "";
 var compiling_word = { name: "", data: ""};
 var words          = {
     "+":  function()  { pstack.push(pstack.pop() + pstack.pop()); },
@@ -24,11 +24,17 @@ var words          = {
     "(": function() { withinComment = true; },
     ")": function() { withinComment = false; },
 
-    ".":  function()         { console.log(pstack.pop()); },
-    ".S": function()         { console.log("<" + pstack.length + "> " + pstack); },
-    "WORDS": function()      { console.log(Object.keys(words)); },
-    "CLEARSTACK": function() { pstack.clear(); }
+    ".":  function()         { println(pstack.pop()); },
+    ".S": function()         { println("<" + pstack.length + "> " + pstack); },
+    "WORDS": function()      { println(Object.keys(words).join(" ")); },
+    "CLEARSTACK": function() { pstack = []; println(""); }
 };
+
+// print the given text to whatever print() wants us to.
+// we let/expect print be overriden by index.html.
+var println = function(text) {
+    print(text + " ok")
+}
 
 // add the word that's currently compiling to the dictionary
 var compile = function() {
@@ -85,10 +91,7 @@ var parseToken = function(element, index, arr) {
     }
 };
 
-// parse the entirety of the user's input.
+// parse a whole string.
 var parse = function(user_input) {
     user_input.split(" ").forEach(parseToken);
 };
-
-parse(input_words);
-

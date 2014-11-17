@@ -3,12 +3,32 @@
     <head>
         <title>Fifth.js</title>
         <meta charset="utf-8">
-        <script src="js/fifth.js"></script>
+        <script>
+         window.onload = function() {
+             var print = function(text) {
+                 document.getElementById("foutput").value += text + "\n";
+             }
+             
+             document.getElementById("finput").onkeypress = function(e) {
+                 if(!e) {
+                     e = window.event;
+                 }
+                 if((e.keyCode || e.which) == '13') {
+                     print(this.value);
+                     parse(this.value);
+                     this.value = "";
+                 }
+             }
+         }
+        </script>
+        <link rel="stylesheet" href="style/style.css"/>
     </head>
     <body>
-        <div id="forth_output">
-            <!-- forth.js manipulates this -->
-        </div>
-        <input name="forth_input" type="text">
+        <h1>Fifth.js</h1>
+        
+        <textarea id="foutput" class="forth" readonly></textarea>
+        <input name="forth_input" id="finput" class="forth" type="text">
+        
+        <script src="js/fifth.js"></script>
     </body>
 </html>
