@@ -12,6 +12,11 @@ var words          = {
     "/":  function()  { pstack.push(pstack.pop() / pstack.pop()); },
     "=":  function()  { pstack.push(booleanify(pstack.pop() == pstack.pop())); },
     "MOD": function() { pstack.push(pstack.pop() % pstack.pop()); },
+    "ABS": function() { pstack.push(Math.abs(pstack.pop())); },
+    "MIN": function() { pstack.push(Math.min(pstack.pop(), pstack.pop())); },
+    "MAX": function() { pstack.push(Math.max(pstack.pop(), pstack.pop())); },
+    "FLOOR": function() { pstack.push(Math.floor(pstack.pop())); },
+    "ROUND": function() { pstack.push(Math.round(pstack.pop())); },
 
     // stack manipulation words
     "DUP": function()  { var top = pstack.pop(); pstack.push(top); pstack.push(top); },
@@ -28,7 +33,10 @@ var words          = {
     // return-stack related words
     ">R": function() { rstack.push(pstack.pop()); },
     "R>": function() { pstack.push(rstack.pop()); },
-
+    "R@": function() { pstack.push(rstack[rstack.length - 1]) },
+    "J": function() { pstack.push(rstack[rstack.length - 3]) },
+    "I": "R@",
+                      
     // compiling-related words
     ":": function() { mode = 1; },
     ";": function() { compile(); },
@@ -85,7 +93,7 @@ var booleanify = function(condition) {
 
 // parse a single token from the user's input.
 var parseToken = function(element, index, arr) {
-    if(element === "//") { return; }
+    if(element === "//" || element.trim() == "") { return; }
 
     if(mode == 1 && element !== ";")
     {
