@@ -22,7 +22,7 @@ var words       = {
     "CLEARSTACK": function() { pstack.clear(); }
 };
 
-input_words = "4 6 + 10 = .s"; // not gonna get the user input from html just yet
+input_words = "4 6 + 10 .S"; // not gonna get the user input from html just yet
 
 // whether or not the given string is actually a number.
 var isNumber = function(str) {
@@ -41,8 +41,10 @@ var booleanify = function(condition) {
 
 // parse a single token from the user's input.
 var parseToken = function(element, index, arr) {
+    if(element === "//") { return; }
+
     if(isNumber(element)) {
-        paramstack.push(parseFloat(element));
+        pstack.push(parseFloat(element));
     } else if(isWord(element)) {
         words[element]();
     } else {
