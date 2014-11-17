@@ -18,9 +18,11 @@ var words          = {
     "SWAP": function() { var a = pstack.pop(); var b = pstack.pop(); pstack.push(a); pstack.push(b); },
     "DROP": function() { pstack.pop(); },
     "ROT": function()  { var a = pstack.pop(); var b = pstack.pop(); var c = pstack.pop(); pstack.push(b); pstack.push(a); pstack.push(c); },
-    "NIP": function()  { var a = pstack.pop(); pstack.pop(); pstack.push(a); },
+    "NIP": function()  { pstack.splice(-2, 1); },
     "TUCK": function() { var a = pstack.pop(); var b = pstack.pop(); pstack.push(a); pstack.push(b); pstack.push(a); },
     "OVER": function() { var a = pstack.pop(); var b = pstack.pop(); pstack.push(b); pstack.push(a); pstack.push(b); },
+    "ROLL": function() { pstack.push(pstack.splice(-(pstack.pop() + 1), 1)); },
+    "PICK": function() { var dist = pstack.pop() + 1; pstack.push(pstack[pstack.length - dist]); },
     "2DROP": "DROP DROP",
 
     // return-stack related words
@@ -53,7 +55,7 @@ var println = function(text) {
     printStd(text + " ok");
 }
 
-// add the word that's currently compiling to the dictionary
+// add the word that's currently compiling to the dictionary.
 var compile = function() {
     if(mode != 1) {
         throw "Not in compile mode!";
