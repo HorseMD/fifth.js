@@ -19,6 +19,8 @@ var words          = {
     "DROP": function() { pstack.pop(); },
     "ROT": function()  { var a = pstack.pop(); var b = pstack.pop(); var c = pstack.pop(); pstack.push(b); pstack.push(a); pstack.push(c); },
     "NIP": function()  { var a = pstack.pop(); pstack.pop(); pstack.push(a); },
+    "TUCK": function() { var a = pstack.pop(); var b = pstack.pop(); pstack.push(a); pstack.push(b); pstack.push(a); },
+    "OVER": function() { var a = pstack.pop(); var b = pstack.pop(); pstack.push(b); pstack.push(a); pstack.push(b); },
     "2DROP": "DROP DROP",
 
     // return-stack related words
