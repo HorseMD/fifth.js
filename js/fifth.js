@@ -6,15 +6,15 @@ var input_words    = "";
 var compiling_word = { name: "", data: ""};
 var words          = {
     // arithmetic words
-    "+":  function()  { pstack.push(pstack.pop() + pstack.pop()); },
-    "-":  function()  { pstack.push(pstack.pop() - pstack.pop()); },
-    "*":  function()  { pstack.push(pstack.pop() * pstack.pop()); },
-    "/":  function()  { pstack.push(pstack.pop() / pstack.pop()); },
-    "=":  function()  { pstack.push(booleanify(pstack.pop() == pstack.pop())); },
-    "MOD": function() { pstack.push(pstack.pop() % pstack.pop()); },
-    "ABS": function() { pstack.push(Math.abs(pstack.pop())); },
-    "MIN": function() { pstack.push(Math.min(pstack.pop(), pstack.pop())); },
-    "MAX": function() { pstack.push(Math.max(pstack.pop(), pstack.pop())); },
+    "+":  function()    { pstack.push(pstack.pop() + pstack.pop()); },
+    "-":  function()    { pstack.push(pstack.pop() - pstack.pop()); },
+    "*":  function()    { pstack.push(pstack.pop() * pstack.pop()); },
+    "/":  function()    { pstack.push(pstack.pop() / pstack.pop()); },
+    "=":  function()    { pstack.push(booleanify(pstack.pop() == pstack.pop())); },
+    "MOD": function()   { pstack.push(pstack.pop() % pstack.pop()); },
+    "ABS": function()   { pstack.push(Math.abs(pstack.pop())); },
+    "MIN": function()   { pstack.push(Math.min(pstack.pop(), pstack.pop())); },
+    "MAX": function()   { pstack.push(Math.max(pstack.pop(), pstack.pop())); },
     "FLOOR": function() { pstack.push(Math.floor(pstack.pop())); },
     "ROUND": function() { pstack.push(Math.round(pstack.pop())); },
 
@@ -25,7 +25,7 @@ var words          = {
     "ROT": function()  { var a = pstack.pop(); var b = pstack.pop(); var c = pstack.pop(); pstack.push(b); pstack.push(a); pstack.push(c); },
     "NIP": function()  { pstack.splice(-2, 1); },
     "TUCK": function() { var top = pstack[pstack.length - 1]; pstack.splice(-2, 0, top); },
-    "OVER": function() { pstack.push(pstack[pstack.length - 2]) },
+    "OVER": function() { pstack.push(pstack[pstack.length - 2]); },
     "ROLL": function() { pstack.push(pstack.splice(-(pstack.pop() + 1), 1)); },
     "PICK": function() { var dist = pstack.pop() + 1; pstack.push(pstack[pstack.length - dist]); },
     "2DROP": "DROP DROP",
@@ -33,10 +33,10 @@ var words          = {
     // return-stack related words
     ">R": function() { rstack.push(pstack.pop()); },
     "R>": function() { pstack.push(rstack.pop()); },
-    "R@": function() { pstack.push(rstack[rstack.length - 1]) },
-    "J": function() { pstack.push(rstack[rstack.length - 3]) },
+    "R@": function() { pstack.push(rstack[rstack.length - 1]); },
+    "J": function()  { pstack.push(rstack[rstack.length - 3]); },
     "I": "R@",
-                      
+    
     // compiling-related words
     ":": function() { mode = 1; },
     ";": function() { compile(); },
@@ -46,7 +46,7 @@ var words          = {
     // special words
     ".":  function()         { println(pstack.pop()); },
     ".S": function()         { println("<" + pstack.length + "> " + pstack.join(" ")); },
-    "PAGE": function()       { document.getElementById("foutput").value = "" },
+    "PAGE": function()       { document.getElementById("foutput").value = ""; },
     "WORDS": function()      { println(Object.keys(words).join(" ")); },
     "CLEARSTACK": function() { pstack = []; println(""); }
 };
@@ -82,6 +82,8 @@ var isNumber = function(str) {
 };
 
 // whether or not fifth.js knows about this word.
+// unless we're in compilation mode, in which case it pretends
+// to know everything.
 var isWord = function(str) {
     return str in words || mode === 1;
 };
@@ -92,8 +94,8 @@ var booleanify = function(condition) {
 };
 
 // parse a single token from the user's input.
-var parseToken = function(element, index, arr) {
-    if(element === "//" || element.trim() == "") { return; }
+var parseToken = function(element) {
+    if(element.trim() == "") { return; }
 
     if(mode == 1 && element !== ";")
     {
@@ -108,9 +110,9 @@ var parseToken = function(element, index, arr) {
         } else if(isWord(element)) {
             var word = words[element];
             if(word instanceof Function) {
-                words[element]();
+                words[element](); // execute the word
             } else {
-                parse(word);
+                parse(word);      // word contains words, parse them
             }
         }  else if (!withinComment) {
             println("Word " + element + " isn't in the dictionary.");
@@ -120,5 +122,12 @@ var parseToken = function(element, index, arr) {
 
 // parse a whole string.
 var parse = function(user_input) {
-    user_input.split(" ").forEach(parseToken);
+    var sentence = user_input.split(" ");
+
+    for(var i=0; i<sentence.length; i++) {
+        if(sentence[i] === "//") {
+            break;
+        }
+        parseToken(sentence[i]);
+    }
 };
