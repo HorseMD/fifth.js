@@ -6,24 +6,24 @@ var input_words    = "";
 var compiling_word = { name: "", data: ""};
 var words          = {
     // arithmetic words
-    "+":  function()    { pstack.push(pstack.pop() + pstack.pop()); },
-    "-":  function()    { pstack.push(pstack.pop() - pstack.pop()); },
-    "*":  function()    { pstack.push(pstack.pop() * pstack.pop()); },
-    "/":  function()    { pstack.push(pstack.pop() / pstack.pop()); },
-    "=":  function()    { pstack.push(booleanify(pstack.pop() == pstack.pop())); },
-    "MOD": function()   { pstack.push(pstack.pop() % pstack.pop()); },
-    "ABS": function()   { pstack.push(Math.abs(pstack.pop())); },
-    "MIN": function()   { pstack.push(Math.min(pstack.pop(), pstack.pop())); },
-    "MAX": function()   { pstack.push(Math.max(pstack.pop(), pstack.pop())); },
+    "+":     function() { pstack.push(pstack.pop() + pstack.pop()); },
+    "-":     function() { pstack.push(pstack.pop() - pstack.pop()); },
+    "*":     function() { pstack.push(pstack.pop() * pstack.pop()); },
+    "/":     function() { pstack.push(pstack.pop() / pstack.pop()); },
+    "=":     function() { pstack.push(booleanify(pstack.pop() == pstack.pop())); },
+    "MOD":   function() { pstack.push(pstack.pop() % pstack.pop()); },
+    "ABS":   function() { pstack.push(Math.abs(pstack.pop())); },
+    "MIN":   function() { pstack.push(Math.min(pstack.pop(), pstack.pop())); },
+    "MAX":   function() { pstack.push(Math.max(pstack.pop(), pstack.pop())); },
     "FLOOR": function() { pstack.push(Math.floor(pstack.pop())); },
     "ROUND": function() { pstack.push(Math.round(pstack.pop())); },
 
     // stack manipulation words
-    "DUP": function()  { var top = pstack.pop(); pstack.push(top); pstack.push(top); },
+    "DUP":  function() { var top = pstack.pop(); pstack.push(top); pstack.push(top); },
     "SWAP": function() { var a = pstack.pop(); var b = pstack.pop(); pstack.push(a); pstack.push(b); },
     "DROP": function() { pstack.pop(); },
-    "ROT": function()  { var a = pstack.pop(); var b = pstack.pop(); var c = pstack.pop(); pstack.push(b); pstack.push(a); pstack.push(c); },
-    "NIP": function()  { pstack.splice(-2, 1); },
+    "ROT":  function() { var a = pstack.pop(); var b = pstack.pop(); var c = pstack.pop(); pstack.push(b); pstack.push(a); pstack.push(c); },
+    "NIP":  function() { pstack.splice(-2, 1); },
     "TUCK": function() { var top = pstack[pstack.length - 1]; pstack.splice(-2, 0, top); },
     "OVER": function() { pstack.push(pstack[pstack.length - 2]); },
     "ROLL": function() { pstack.push(pstack.splice(-(pstack.pop() + 1), 1)); },
@@ -34,7 +34,7 @@ var words          = {
     ">R": function() { rstack.push(pstack.pop()); },
     "R>": function() { pstack.push(rstack.pop()); },
     "R@": function() { pstack.push(rstack[rstack.length - 1]); },
-    "J": function()  { pstack.push(rstack[rstack.length - 3]); },
+    "J":  function() { pstack.push(rstack[rstack.length - 3]); },
     "I": "R@",
     
     // compiling-related words
@@ -44,13 +44,13 @@ var words          = {
     ")": function() { withinComment = false; },
 
     // special words
-    ".":  function()         { printReturn(pstack.pop()); },
-    ".S": function()         { printReturn("<" + pstack.length + "> " + pstack.join(" ")); },
-    "PAGE": function()       { document.getElementById("foutput").value = ""; },
-    "WORDS": function()      { printReturn(Object.keys(words).join(" ")); },
+    ".":          function() { printReturn(pstack.pop()); },
+    ".S":         function() { printReturn("<" + pstack.length + "> " + pstack.join(" ")); },
+    "PAGE":       function() { document.getElementById("foutput").value = ""; },
+    "WORDS":      function() { printReturn(Object.keys(words).join(" ")); },
     "CLEARSTACK": function() { pstack = []; },
-    "EMIT": function()       { printReturn(String.fromCharCode(pstack.pop())); },
-    "CR": function()         { printReturn("\n"); }
+    "EMIT":       function() { printReturn(String.fromCharCode(pstack.pop())); },
+    "CR":         function() { printReturn("\n"); }
 };
 
 // provide a means by which to display text to the user.
@@ -59,6 +59,7 @@ var printStd = function(text) {
 };
 
 // when a word returns text to display, it should go through here.
+// should only be used by words.
 var printReturn = function(text) {
     printStd(" " + text);
 };
@@ -94,10 +95,8 @@ var isNumber = function(str) {
 };
 
 // whether or not fifth.js knows about this word.
-// unless we're in compilation mode, in which case it pretends
-// to know everything.
 var isWord = function(str) {
-    return str in words || isCompiling;
+    return str in words;
 };
 
 // given a boolean, return -1 if true, 0 otherwise.
