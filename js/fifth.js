@@ -36,7 +36,7 @@ var words          = {
     "R@": function() { pstack.push(rstack[rstack.length - 1]); },
     "J":  function() { pstack.push(rstack[rstack.length - 3]); },
     "I": "R@",
-    
+
     // compiling-related words
     ":": function() { isCompiling = true; },
     ";": function() { compile(); },
@@ -143,9 +143,9 @@ var parseLine = function(line, echo_success) {
             parseToken(sentence[i]);
         }
         if(echo_success) {
-            printOk();   
+            printOk();
         }
-    } catch (e) {
+    } catch(e) {
         printErr(e);
     }
 };
@@ -153,7 +153,7 @@ var parseLine = function(line, echo_success) {
 // parse input from the user.
 var parseUserInput = function(user_input) {
     user_input = user_input.trim();
-    
+
     printStd(user_input);
     parseLine(user_input, true);
 };
