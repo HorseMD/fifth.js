@@ -1,6 +1,6 @@
-var pstack = new Array();
-var rstack = new Array();
-var isCompiling = false; // interptret = false, compile = true
+var pstack = [];
+var rstack = [];
+var isCompiling    = false; // interptret = false, compile = true
 var withinComment  = false;
 var input_words    = "";
 var compiling_word = { name: "", data: ""};
@@ -55,13 +55,13 @@ var words          = {
 // print the given text + ok to the output (#foutput).
 var printStd = function(text) {
     document.getElementById("foutput").value += text + "\n";
-}
+};
 
 // used by fifth.js to respond to the user.
 // print the given text to the output.
 var println = function(text) {
     printStd(text + " ok");
-}
+};
 
 // add the word that's currently compiling to the dictionary.
 var compile = function() {
@@ -74,7 +74,7 @@ var compile = function() {
     words[compiling_word["name"]] = compiling_word["data"].trim();
     compiling_word = { name: "", data: "" };
     isCompiling = false;
-}
+};
 
 // whether or not the given string is actually a number.
 var isNumber = function(str) {
