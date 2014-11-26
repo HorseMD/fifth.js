@@ -1,6 +1,6 @@
 var pstack = new Array();
 var rstack = new Array();
-var mode = 0; // interptret = 0, compile = 1
+var isCompiling = false; // interptret = false, compile = true
 var withinComment  = false;
 var input_words    = "";
 var compiling_word = { name: "", data: ""};
@@ -38,7 +38,7 @@ var words          = {
     "I": "R@",
     
     // compiling-related words
-    ":": function() { mode = 1; },
+    ":": function() { isCompiling = true; },
     ";": function() { compile(); },
     "(": function() { withinComment = true; },
     ")": function() { withinComment = false; },
@@ -65,7 +65,7 @@ var println = function(text) {
 
 // add the word that's currently compiling to the dictionary.
 var compile = function() {
-    if(mode != 1) {
+    if(!isCompiling) {
         throw "Not in compile mode!";
     }
     else if(compiling_word["name"] === "") {
@@ -73,7 +73,7 @@ var compile = function() {
     }
     words[compiling_word["name"]] = compiling_word["data"].trim();
     compiling_word = { name: "", data: "" };
-    mode = 0;
+    isCompiling = false;
 }
 
 // whether or not the given string is actually a number.
@@ -85,7 +85,7 @@ var isNumber = function(str) {
 // unless we're in compilation mode, in which case it pretends
 // to know everything.
 var isWord = function(str) {
-    return str in words || mode === 1;
+    return str in words || isCompiling;
 };
 
 // given a boolean, return -1 if true, 0 otherwise.
@@ -97,7 +97,7 @@ var booleanify = function(condition) {
 var parseToken = function(element) {
     if(element.trim() == "") { return; }
 
-    if(mode == 1 && element !== ";")
+    if(isCompiling && element !== ";")
     {
         if(compiling_word["name"] === "") {
             compiling_word["name"] = element;
