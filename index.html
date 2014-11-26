@@ -10,8 +10,7 @@
                      e = window.event;
                  }
                  if((e.keyCode || e.which) == '13') { //when the user presses 'Enter'
-                     printStd(this.value);
-                     parse(this.value);
+                     parseUserInput(this.value);
                      this.value = "";
                  }
              }

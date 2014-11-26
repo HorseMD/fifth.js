@@ -44,23 +44,35 @@ var words          = {
     ")": function() { withinComment = false; },
 
     // special words
-    ".":  function()         { println(pstack.pop()); },
-    ".S": function()         { println("<" + pstack.length + "> " + pstack.join(" ")); },
+    ".":  function()         { printReturn(pstack.pop()); },
+    ".S": function()         { printReturn("<" + pstack.length + "> " + pstack.join(" ")); },
     "PAGE": function()       { document.getElementById("foutput").value = ""; },
-    "WORDS": function()      { println(Object.keys(words).join(" ")); },
-    "CLEARSTACK": function() { pstack = []; println(""); }
+    "WORDS": function()      { printReturn(Object.keys(words).join(" ")); },
+    "CLEARSTACK": function() { pstack = []; },
+    "EMIT": function()       { printReturn(String.fromCharCode(pstack.pop())); },
+    "CR": function()         { printReturn("\n"); }
 };
 
-// used directly by the input area for commands.
-// print the given text + ok to the output (#foutput).
+// provide a means by which to display text to the user.
 var printStd = function(text) {
-    document.getElementById("foutput").value += text + "\n";
+    document.getElementById("foutput").value += text;
 };
 
-// used by fifth.js to respond to the user.
-// print the given text to the output.
-var println = function(text) {
-    printStd(text + " ok");
+// when a word returns text to display, it should go through here.
+var printReturn = function(text) {
+    printStd(" " + text);
+};
+
+// say that the line has been evaluated sucessfully.
+// should only be called by the parser.
+var printOk = function() {
+    printStd("  ok\n");
+};
+
+// print an error.
+// should only be called by the parser.
+var printErr = function(text) {
+    printStd("\nError: " + text + "\n");
 };
 
 // add the word that's currently compiling to the dictionary.
@@ -112,22 +124,37 @@ var parseToken = function(element) {
             if(word instanceof Function) {
                 words[element](); // execute the word
             } else {
-                parse(word);      // word contains words, parse them
+                parseLine(word);  // word contains words, parse them
             }
-        }  else if (!withinComment) {
-            println("Word " + element + " isn't in the dictionary.");
+        } else if (!withinComment) {
+            throw "Undefined word >" + element + "<";
         }
     }
 };
 
-// parse a whole string.
-var parse = function(user_input) {
-    var sentence = user_input.split(" ");
+// parse an entire line of words.
+var parseLine = function(line, echo_success) {
+    var sentence = line.split(" ");
 
-    for(var i=0; i<sentence.length; i++) {
-        if(sentence[i] === "//") {
-            break;
+    try {
+        for(var i=0; i<sentence.length; i++) {
+            if(sentence[i] === "//") {
+                break;
+            }
+            parseToken(sentence[i]);
         }
-        parseToken(sentence[i]);
+        if(echo_success) {
+            printOk();   
+        }
+    } catch (e) {
+        printErr(e);
     }
+};
+
+// parse input from the user.
+var parseUserInput = function(user_input) {
+    user_input = user_input.trim();
+    
+    printStd(user_input);
+    parseLine(user_input, true);
 };
