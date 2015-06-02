@@ -2,9 +2,25 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Fifth.js</title>        
-        <!--    <script src="build/fifthjs.min.js"></script> -->
-        <script src="src/fifthjs.js"></script>
+        <title>Fifth.js</title>
+        <style>
+         body {
+             text-align: center;
+             color: #444;
+         }
+         input, textarea {
+             display: block;
+             margin: 10px auto;
+             width: 40%;
+             border: 1px solid #c3c3c3;
+             padding: 5px;
+         }
+         textarea {
+             min-height: 300px;
+         }
+        </style>
+
+        <script src="build/fifthjs.min.js"></script>
     </head>
     <body>
         <h1>Fifth.js</h1>
@@ -13,7 +29,7 @@
 
         <script>
          var input = document.querySelector("#finput");
-         input.addEventListener("keypress", function(e) { 
+         input.addEventListener("keypress", function(e) {
              if(e.keyCode == '13') {
                  Fifth.setOut(document.querySelector("#foutput")).parse(e.target.value);
                  e.target.value = "";
