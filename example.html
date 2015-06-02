@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Fifth.js</title>        
+        <!--    <script src="build/fifthjs.min.js"></script> -->
+        <script src="src/fifthjs.js"></script>
+    </head>
+    <body>
+        <h1>Fifth.js</h1>
+        <textarea id="foutput" class="forth" readonly></textarea>
+        <input name="forth_input" id="finput" class="forth" type="text">
+
+        <script>
+         var input = document.querySelector("#finput");
+         input.addEventListener("keypress", function(e) { 
+             if(e.keyCode == '13') {
+                 Fifth.setOut(document.querySelector("#foutput")).parse(e.target.value);
+                 e.target.value = "";
+             }
+         });
+        </script>
+    </body>
+</html>
